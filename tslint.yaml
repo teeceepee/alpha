@@ -1,0 +1,16 @@
+extends: "tslint:recommended"
+rules:
+  no-console: false
+  quotemark:
+    options:
+      - single
+      - avoid-escape
+  semicolon:
+    options: never
+  space-before-function-paren:
+    options:
+      anonymous: "always"
+      asyncArrow: "always"
+      constructor: "always"
+      method: "always"
+      named: "always"

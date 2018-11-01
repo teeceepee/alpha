@@ -1,17 +1,17 @@
 
 export class HashTable<K, V> {
-  private keys: Array<K>
-  private values: Array<V>
-  private _size: number
+  private keys: K[]
+  private values: V[]
+  private count: number
 
-  constructor(private capacity: number = 8) {
+  constructor (private capacity: number = 8) {
     this.keys = new Array(capacity)
     this.values = new Array(capacity)
-    this._size = 0
+    this.count = 0
   }
 
-  size(): number {
-    return this._size
+  public size (): number {
+    return this.count
   }
 
   // set(key: K, value: V): void {
