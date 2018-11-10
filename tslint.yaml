@@ -1,5 +1,6 @@
 extends: "tslint:recommended"
 rules:
+  no-bitwise: false
   no-console: false
   quotemark:
     options:

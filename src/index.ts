@@ -1,5 +1,5 @@
-import { HashTable } from './hash-table'
+import { HashTable } from './hash-table/open-addressing'
 
-const h = new HashTable<string, number>()
+const h = new HashTable<number>()
 
-console.log(h.size())
+console.log(h)
