@@ -7,13 +7,16 @@
     "build": "tsc",
     "lint": "tslint --project tsconfig.json",
     "start": "node dist/index.js",
-    "test": "node dist/index.js"
+    "test": "jest ./src"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "tslint": "^5.11.0",
-    "typescript": "^3.1.5"
+    "@types/jest": "23.3.9",
+    "jest": "23.6.0",
+    "ts-jest": "23.10.4",
+    "tslint": "5.11.0",
+    "typescript": "3.1.5"
   }
 }
