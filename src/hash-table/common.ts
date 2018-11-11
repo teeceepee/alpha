@@ -1,6 +1,7 @@
 
 // A simple string hash method from:
 // https://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+// s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
 export function stringHash (key: string): number {
   let hash: number = 0
   if (key.length === 0) {
@@ -9,7 +10,7 @@ export function stringHash (key: string): number {
 
   for (let i = 0; i < key.length; i++) {
     const char: number = key.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
+    hash = 31 * hash + char
     hash = hash & hash // Convert to 32bit integer
   }
 
