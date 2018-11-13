@@ -28,6 +28,18 @@ describe('LinkedList', () => {
     expect(list.size()).toBe(0)
   })
 
+  test('findBy', () => {
+    const list = new LinkedList<number>()
+    const num = 1
+    list.add(num)
+
+    const found = list.findBy((n) => n === num)
+
+    expect(found).toBe(num)
+
+    expect(list.findBy((n) => n === 2)).toBeNull()
+  })
+
   test('forEach', () => {
     const list = new LinkedList<number>()
     const min = 0

@@ -28,6 +28,24 @@ export class LinkedList<V> {
     return count
   }
 
+  public findBy (predictFn: (v: V) => boolean): V | null {
+    let current = this.head.next
+    let i = 0
+
+    while (current) {
+      const currentValue: V = current.value
+
+      if (predictFn(currentValue)) {
+        return currentValue
+      }
+
+      current = current.next
+      i = i + 1
+    }
+
+    return null
+  }
+
   // Add value in list head
   public add (value: V): void {
     const node = new ListNode<V>(value)
