@@ -54,18 +54,22 @@ export class LinkedList<V> {
     this.head.next = node
   }
 
-  public remove (value: V): void {
+  public removeBy (predictFn: (v: V) => boolean): void {
     let prev = this.head
     let current = prev.next
 
     while (current) {
-      if (current.value === value) {
+      if (predictFn(current.value)) {
         prev.next = current.next
       }
 
       prev = current
       current = current.next
     }
+  }
+
+  public remove (value: V): void {
+    this.removeBy((v: V) => v === value)
   }
 
   public forEach (callbackFn: (value: V, index: number) => void): void {

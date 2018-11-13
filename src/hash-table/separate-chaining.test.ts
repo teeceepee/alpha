@@ -1,8 +1,8 @@
-import { HashTable } from './open-addressing'
+import { HashTable } from './separate-chaining'
 
-describe('open addressing HashTable', () => {
+describe('separate chaining HashTable', () => {
   test('constructor', () => {
-    const h = new HashTable()
+    const h = new HashTable<number>()
 
     expect(h.size()).toBe(0)
   })
