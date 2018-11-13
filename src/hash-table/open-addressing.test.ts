@@ -36,7 +36,9 @@ describe('HashTable', () => {
     expect(h.get(k)).toBeNull()
 
     h.set(k, v)
-
     expect(h.get(k)).toBe(v)
+
+    h.remove(k)
+    expect(h.get(k)).toBeNull()
   })
 })
