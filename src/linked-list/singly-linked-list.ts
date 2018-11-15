@@ -1,19 +1,23 @@
 
-class ListNode<V> {
-  public value: V = null
-  public next: ListNode<V> = null
+class ListHead<V> {
+  public next: ListNode<V> | null = null
+}
 
-  constructor (v: V = null) {
+class ListNode<V> {
+  public value: V
+  public next: ListNode<V> | null = null
+
+  constructor (v: V) {
     this.value = v
   }
 }
 
 // Singly linked list
 export class LinkedList<V> {
-  private head: ListNode<V>
+  private head: ListHead<V>
 
   constructor () {
-    this.head = new ListNode<V>()
+    this.head = new ListHead<V>()
   }
 
   public size (): number {

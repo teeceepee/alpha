@@ -2,8 +2,8 @@ import { linearProbing, pseudoRandomProbing, stringHash } from './common'
 
 // Open addressing hash table
 export class HashTable<V> {
-  private keys: string[]
-  private values: V[]
+  private keys: Array<string | null>
+  private values: Array<V | null>
   private count: number
 
   constructor (private capacity: number = 16) {
