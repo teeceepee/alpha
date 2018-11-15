@@ -7,14 +7,15 @@ class Entry<V> {
 }
 
 export class HashTable<V> {
-  public static initialBucketNum = 16
+  private static readonly initialCapacity = 16
+  private static readonly loadFactorThreshold: number = 0.75
 
   private buckets: Array<LinkedList<Entry<V>>>
+  private capacity: number
   private count: number
 
-  constructor () {
-      this.buckets = new Array(HashTable.initialBucketNum)
-      this.count = 0
+  constructor (capacity: number = HashTable.initialCapacity) {
+    this.init(capacity)
   }
 
   public size () {
@@ -23,10 +24,10 @@ export class HashTable<V> {
 
   public set (key: string, value: V): void {
     if (this.needResizing()) {
-      throw(new Error('Need resizing')) // TODO
+      this.resize()
     }
 
-    const bucket = this.hash(key) % this.buckets.length
+    const bucket = this.hash(key) % this.capacity
 
     if (!this.buckets[bucket]) {
       this.buckets[bucket] = new LinkedList<Entry<V>>()
@@ -37,7 +38,7 @@ export class HashTable<V> {
   }
 
   public get (key: string): V | null {
-    const bucket = this.hash(key) % this.buckets.length
+    const bucket = this.hash(key) % this.capacity
 
     if (!this.buckets[bucket]) {
       return null
@@ -49,7 +50,7 @@ export class HashTable<V> {
   }
 
   public remove (key: string): void {
-    const bucket = this.hash(key) % this.buckets.length
+    const bucket = this.hash(key) % this.capacity
 
     if (!this.buckets[bucket]) {
       return
@@ -59,7 +60,30 @@ export class HashTable<V> {
   }
 
   private needResizing (): boolean {
-      return false
+    return this.size() / this.capacity >= HashTable.loadFactorThreshold
+  }
+
+  private resize (): void {
+    const oldCap = this.capacity
+    const oldBuckets = this.buckets
+
+    // Initialize a new table
+    this.init(oldCap * 2)
+
+    // Traverse the old table, add each entry to the new table
+    for (let i = 0; i < oldCap; i++) {
+      if (oldBuckets[i]) {
+        oldBuckets[i].forEach((entry: Entry<V>) => {
+          this.set(entry.key, entry.value)
+        })
+      }
+    }
+  }
+
+  private init (capacity: number): void {
+    this.capacity = capacity
+    this.buckets = new Array(capacity)
+    this.count = 0
   }
 
   private hash (key: string): number {

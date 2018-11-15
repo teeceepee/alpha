@@ -41,4 +41,17 @@ describe('separate chaining HashTable', () => {
     h.remove(k)
     expect(h.get(k)).toBeNull()
   })
+
+  test('resize', () => {
+    const h = new HashTable<number>()
+    const n = 100
+
+    for (let i = 0; i < n; i++) {
+      h.set(`${i}`, i)
+    }
+
+    for (let i = 0; i < n; i++) {
+      expect(h.get(`${i}`)).toBe(i)
+    }
+  })
 })

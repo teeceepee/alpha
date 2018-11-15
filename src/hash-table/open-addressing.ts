@@ -2,14 +2,16 @@ import { linearProbing, pseudoRandomProbing, stringHash } from './common'
 
 // Open addressing hash table
 export class HashTable<V> {
+  private static readonly initialCapacity: number = 16
+  private static readonly loadFactorThreshold: number = 0.75
+
   private keys: Array<string | null>
   private values: Array<V | null>
+  private capacity: number
   private count: number
 
-  constructor (private capacity: number = 16) {
-    this.keys = new Array(capacity)
-    this.values = new Array(capacity)
-    this.count = 0
+  constructor (capacity: number = HashTable.initialCapacity) {
+    this.init(capacity)
   }
 
   public size (): number {
@@ -18,7 +20,7 @@ export class HashTable<V> {
 
   public set (key: string, value: V): void {
     if (this.needResizing()) {
-      throw(new Error('Need rehash')) // TODO
+      this.resize()
     }
 
     let bucket = this.hash(key) % this.capacity
@@ -65,7 +67,30 @@ export class HashTable<V> {
   }
 
   private needResizing (): boolean {
-    return false
+    return this.size() / this.capacity >= HashTable.loadFactorThreshold
+  }
+
+  private resize (): void {
+    const oldCap = this.capacity
+    const oldKeys = this.keys
+    const oldValues = this.values
+
+    // Initialize a new table
+    this.init(oldCap * 2)
+
+    // Traverse the old table, add each entry to the new table
+    for (let i = 0; i < oldCap; i++) {
+      if (oldKeys[i] != null) {
+        this.set(oldKeys[i]!, oldValues[i]!)
+      }
+    }
+  }
+
+  private init (capacity: number): void {
+    this.keys = new Array(capacity)
+    this.values = new Array(capacity)
+    this.capacity = capacity
+    this.count = 0
   }
 
   private hash (key: string): number {
