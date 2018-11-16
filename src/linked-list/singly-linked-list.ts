@@ -14,7 +14,7 @@ class ListNode<V> {
 
 // Singly linked list
 export class LinkedList<V> {
-  private head: ListHead<V>
+  private readonly head: ListHead<V>
 
   constructor () {
     this.head = new ListHead<V>()
@@ -32,14 +32,14 @@ export class LinkedList<V> {
     return count
   }
 
-  public findBy (predictFn: (v: V) => boolean): V | null {
+  public findBy (predicateFn: (v: V) => boolean): V | null {
     let current = this.head.next
     let i = 0
 
     while (current) {
       const currentValue: V = current.value
 
-      if (predictFn(currentValue)) {
+      if (predicateFn(currentValue)) {
         return currentValue
       }
 
@@ -58,12 +58,12 @@ export class LinkedList<V> {
     this.head.next = node
   }
 
-  public removeBy (predictFn: (v: V) => boolean): void {
+  public removeBy (predicateFn: (v: V) => boolean): void {
     let prev = this.head
     let current = prev.next
 
     while (current) {
-      if (predictFn(current.value)) {
+      if (predicateFn(current.value)) {
         prev.next = current.next
       }
 

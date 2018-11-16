@@ -80,8 +80,11 @@ export class HashTable<V> {
 
     // Traverse the old table, add each entry to the new table
     for (let i = 0; i < oldCap; i++) {
-      if (oldKeys[i] != null) {
-        this.set(oldKeys[i]!, oldValues[i]!)
+      const k = oldKeys[i]
+      const v = oldValues[i]
+
+      if (k != null && v != null) {
+        this.set(k, v)
       }
     }
   }
