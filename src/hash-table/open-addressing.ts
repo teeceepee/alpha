@@ -5,10 +5,10 @@ export class HashTable<V> {
   private static readonly initialCapacity: number = 16
   private static readonly loadFactorThreshold: number = 0.75
 
-  private keys: Array<string | null>
-  private values: Array<V | null>
-  private capacity: number
-  private count: number
+  private keys: Array<string | null> = []
+  private values: Array<V | null> = []
+  private capacity: number = 0
+  private count: number = 0
 
   constructor (capacity: number = HashTable.initialCapacity) {
     this.init(capacity)
