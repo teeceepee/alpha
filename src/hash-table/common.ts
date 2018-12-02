@@ -11,6 +11,8 @@ export function stringHash (key: string): number {
   for (let i = 0; i < key.length; i++) {
     const char: number = key.charCodeAt(i)
     hash = 31 * hash + char
+
+    /* tslint:disable-next-line */
     hash = hash & hash // Convert to 32bit integer
   }
 
