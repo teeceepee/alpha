@@ -4,6 +4,7 @@ describe('LinkedList', () => {
   test('constructor', () => {
     const list = new LinkedList<number>()
     expect(list.size()).toBe(0)
+    expect(list.isEmpty()).toBe(true)
   })
 
   test('size', () => {
@@ -52,5 +53,15 @@ describe('LinkedList', () => {
     list.forEach((value, index) => {
       expect(value + index).toBe(min + max)
     })
+  })
+
+  test('removeFirst', () => {
+    const list = new LinkedList<number>()
+
+    list.addFirst(10)
+    list.addFirst(20)
+
+    const v = list.removeFirst()
+    expect(v).toBe(20)
   })
 })

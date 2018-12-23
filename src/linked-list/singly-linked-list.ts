@@ -87,4 +87,26 @@ export class LinkedList<V> {
       i = i + 1
     }
   }
+
+  public isEmpty (): boolean {
+    return !this.head.next
+  }
+
+  public addFirst (value: V): void {
+    this.add(value)
+  }
+
+  public removeFirst (): V | null {
+    // just for strict null checks
+    if (!this.head.next) {
+      return null
+    }
+
+    const firstNode: ListNode<V> = this.head.next
+
+    // remove the first node
+    this.head.next = firstNode.next
+
+    return firstNode.value
+  }
 }
