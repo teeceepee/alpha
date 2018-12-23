@@ -34,4 +34,50 @@ describe('left-leaning RedBlackTree', () => {
       expect(tree.get(keys[i])).toBe(keys[i])
     }
   })
+
+  test('forEach', () => {
+    const tree = new RedBlackTree<string>()
+
+    const count = 100
+    const keys = new Array(count)
+
+    for (let i = 0; i < count; i++) {
+      keys[i] = i.toString()
+
+      tree.add(keys[i], keys[i])
+    }
+
+    const sorted = keys.sort()
+
+    let index = 0
+
+    tree.forEach((v) => {
+      expect(v).toBe(sorted[index])
+
+      index += 1
+    })
+  })
+
+  test('forEachR', () => {
+    const tree = new RedBlackTree<string>()
+
+    const count = 100
+    const keys = new Array(count)
+
+    for (let i = 0; i < count; i++) {
+      keys[i] = i.toString()
+
+      tree.add(keys[i], keys[i])
+    }
+
+    const sorted = keys.sort()
+
+    let index = 0
+
+    tree.forEachR((v) => {
+      expect(v).toBe(sorted[index])
+
+      index += 1
+    })
+  })
 })

@@ -89,7 +89,7 @@ export class LinkedList<V> {
   }
 
   public isEmpty (): boolean {
-    return !this.head.next
+    return this.head.next == null
   }
 
   public addFirst (value: V): void {
@@ -98,7 +98,7 @@ export class LinkedList<V> {
 
   public removeFirst (): V | null {
     // just for strict null checks
-    if (!this.head.next) {
+    if (this.head.next == null) {
       return null
     }
 

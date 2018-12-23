@@ -1,3 +1,4 @@
+import { Stack } from '../stack/linked-list-stack'
 
 enum Color {
   Red = 1,
@@ -38,6 +39,15 @@ export class RedBlackTree<V> {
 
   public get (k: string): V | null {
     return this.getRecursively(this.root, k)
+  }
+
+  public forEach (callbackFn: (value: V) => void): void {
+    this.traverseIteratively(callbackFn)
+  }
+
+  // recursively
+  public forEachR (callbackFn: (value: V) => void): void {
+    this.traverseRecursively(this.root, callbackFn)
   }
 
   private depthRecursively (node: TreeNode<V> | null): number {
@@ -148,5 +158,41 @@ export class RedBlackTree<V> {
 
   private isRed (node: TreeNode<V> | null): boolean {
     return !!node && node.isRed()
+  }
+
+  private traverseIteratively (callbackFn: (value: V) => void): void {
+    const stack = new Stack<TreeNode<V>>()
+    let node: TreeNode<V> | null = this.root
+
+    do {
+      while (node != null) {
+        stack.push(node)
+        node = node.left
+      }
+
+      while (!stack.isEmpty()) {
+        const top = stack.pop()
+
+        // for strict null checks
+        if (top != null) {
+          callbackFn(top.value)
+
+          if (top.right != null) {
+            node = top.right
+            break
+          }
+        }
+      }
+    } while (node != null || !stack.isEmpty())
+  }
+
+  private traverseRecursively (node: TreeNode<V> | null, callbackFn: (value: V) => void): void {
+    if (node == null) {
+      return
+    }
+
+    this.traverseRecursively(node.left, callbackFn)
+    callbackFn(node.value) // in-order traverse
+    this.traverseRecursively(node.right, callbackFn)
   }
 }
