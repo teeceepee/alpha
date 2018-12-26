@@ -33,7 +33,7 @@ export class HashTable<V> {
       this.buckets[bucket] = new LinkedList<Entry<V>>()
     }
 
-    this.buckets[bucket].add(new Entry<V>(key, value))
+    this.buckets[bucket].addFirst(new Entry<V>(key, value))
     this.count = this.count + 1
   }
 

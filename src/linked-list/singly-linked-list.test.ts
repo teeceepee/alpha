@@ -10,10 +10,10 @@ describe('LinkedList', () => {
   test('size', () => {
     const list = new LinkedList<number>()
 
-    list.add(10)
+    list.addFirst(10)
     expect(list.size()).toBe(1)
 
-    list.add(20)
+    list.addLast(20)
     expect(list.size()).toBe(2)
 
     list.remove(30)
@@ -32,7 +32,7 @@ describe('LinkedList', () => {
   test('findBy', () => {
     const list = new LinkedList<number>()
     const num = 1
-    list.add(num)
+    list.addFirst(num)
 
     const found = list.findBy((n) => n === num)
 
@@ -47,7 +47,7 @@ describe('LinkedList', () => {
     const max = 10
 
     for (let i = min; i <= max; i++) {
-      list.add(i)
+      list.addFirst(i)
     }
 
     list.forEach((value, index) => {

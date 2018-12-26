@@ -1,8 +1,4 @@
 
-class ListHead<V> {
-  public next: ListNode<V> | null = null
-}
-
 class ListNode<V> {
   public value: V
   public next: ListNode<V> | null = null
@@ -14,15 +10,17 @@ class ListNode<V> {
 
 // Singly linked list
 export class LinkedList<V> {
-  private readonly head: ListHead<V>
+  private head: ListNode<V> | null
+  private tail: ListNode<V> | null
 
   constructor () {
-    this.head = new ListHead<V>()
+    this.head = null
+    this.tail = null
   }
 
   public size (): number {
     let count = 0
-    let current = this.head.next
+    let current = this.head
 
     while (current) {
       count = count + 1
@@ -33,7 +31,7 @@ export class LinkedList<V> {
   }
 
   public findBy (predicateFn: (v: V) => boolean): V | null {
-    let current = this.head.next
+    let current = this.head
     let i = 0
 
     while (current) {
@@ -51,20 +49,51 @@ export class LinkedList<V> {
   }
 
   // Add value in list head
-  public add (value: V): void {
+  public addFirst (value: V): void {
     const node = new ListNode<V>(value)
 
-    node.next = this.head.next
-    this.head.next = node
+    // if the list is empty, the new node should be tail
+    if (this.isEmpty()) {
+      this.tail = node
+    }
+
+    node.next = this.head
+    this.head = node
+  }
+
+  // Add value in list tail
+  public addLast (value: V): void {
+    const node = new ListNode<V>(value)
+
+    if (this.tail == null) {
+      this.head = node
+    } else {
+      this.tail.next = node
+    }
+
+    this.tail = node
   }
 
   public removeBy (predicateFn: (v: V) => boolean): void {
-    let prev = this.head
-    let current = prev.next
+    if (this.head == null) {
+      return
+    }
+
+    let prev: ListNode<V> | null = null
+    let current: ListNode<V> | null = this.head
 
     while (current) {
       if (predicateFn(current.value)) {
-        prev.next = current.next
+        if (current.next == null) {
+          this.tail = prev
+        }
+
+        if (prev == null) {
+          this.head = current.next
+        } else {
+          prev.next = current.next
+        }
+        return
       }
 
       prev = current
@@ -77,7 +106,7 @@ export class LinkedList<V> {
   }
 
   public forEach (callbackFn: (value: V, index: number) => void): void {
-    let current = this.head.next
+    let current = this.head
     let i = 0
 
     while (current) {
@@ -89,23 +118,23 @@ export class LinkedList<V> {
   }
 
   public isEmpty (): boolean {
-    return this.head.next == null
-  }
-
-  public addFirst (value: V): void {
-    this.add(value)
+    return this.head == null
   }
 
   public removeFirst (): V | null {
     // just for strict null checks
-    if (this.head.next == null) {
+    if (this.head == null) {
       return null
     }
 
-    const firstNode: ListNode<V> = this.head.next
+    const firstNode: ListNode<V> = this.head
+
+    if (firstNode.next == null) {
+      this.tail = null
+    }
 
     // remove the first node
-    this.head.next = firstNode.next
+    this.head = firstNode.next
 
     return firstNode.value
   }
