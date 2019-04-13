@@ -7,9 +7,29 @@ export class Nfa {
   private readonly re: string[] // 匹配转换
   private readonly stateCount: number // 状态数量
   private readonly graph: Digraph // epsilon 转换
+  private readonly startWithLeftParen: boolean // 是否以 `(` 开头，用于计算错误提示的位置
 
   constructor (regexp: string) {
-    this.re = regexp.split('')
+    this.startWithLeftParen = regexp[0] === '('
+
+    // 下面的或操作要求 `|` 一定要在一对括号中
+    // 所以如果正则表达式不以 `(` 开头，则在最外层包裹一层括号
+    if (regexp[0] !== '(') {
+      this.re = new Array(regexp.length + 2)
+      this.re[0] = '('
+
+      for (let i = 0; i < regexp.length; i++) {
+        this.re[i + 1] = regexp[i]
+      }
+
+      this.re[this.re.length - 1] = ')'
+    } else {
+      this.re = new Array(regexp.length)
+      for (let i = 0; i < regexp.length; i++) {
+        this.re[i] = regexp[i]
+      }
+    }
+
     this.stateCount = this.re.length
 
     this.graph = new Digraph(this.stateCount + 1)
@@ -35,7 +55,8 @@ export class Nfa {
           const tmpOp = ops.pop()
 
           if (tmpOp == null) {
-            throw new Error(`Unmatched right parenthesis in ${i}`)
+            const position = this.startWithLeftParen ? i : i - 1
+            throw new Error(`Unmatched right parenthesis, in position: ${position}`)
           } else {
             if (this.re[tmpOp] === '|') {
               alternationOps.add(tmpOp)
@@ -64,7 +85,17 @@ export class Nfa {
     }
 
     if (!ops.isEmpty()) {
-      this.unmatchedParen()
+      const left = ops.pop()
+      if (left != null) {
+        let position: number
+        if (this.startWithLeftParen) {
+          position = left
+        } else {
+          position = left === 0 ? left : left - 1
+        }
+
+        throw new Error(`Unmatched left parenthesis, in position: ${position}`)
+      }
     }
   }
 
@@ -109,9 +140,5 @@ export class Nfa {
     })
 
     return found
-  }
-
-  private unmatchedParen () {
-    throw new Error('Unmatched parenthesis')
   }
 }
