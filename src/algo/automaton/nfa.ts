@@ -23,26 +23,34 @@ export class Nfa {
 
       if (chr === '(' || chr === '|') {
         ops.push(i)
-      } else if (chr === ')') {
-        const or = ops.pop()
+      } else if (chr === ')') { // 支持多向或运算，如 (ab|cd|ef)
+        const alternationOps = new Bag<number>()
 
-        if (or == null) {
-          this.unmatchedParen()
-        } else {
-          if (this.re[or] === '|') {
-            const op = ops.pop()
+        // 从栈中取操作符，如果取不到说明括号不匹配，有多余的 `)`
+        // 如果取到的是 `|`，存入 alternationOps 中
+        // 否则取到的是 `(`，赋值给 lp，结束循环
+        //
+        // 循环结束后，lp 记录与当前 `)` 对应的 `(` 位置，alternationOps 记录中间所有的 `|` 位置
+        while (true) {
+          const tmpOp = ops.pop()
 
-            if (op == null) {
-              this.unmatchedParen()
-            } else {
-              lp = op
-              this.graph.addEdge(lp, or + 1)
-              this.graph.addEdge(or, i)
-            }
+          if (tmpOp == null) {
+            throw new Error(`Unmatched right parenthesis in ${i}`)
           } else {
-            lp = or
+            if (this.re[tmpOp] === '|') {
+              alternationOps.add(tmpOp)
+            } else {
+              lp = tmpOp
+              break
+            }
           }
         }
+
+        // 对每一个 `|`，增加一个从 `(` 到后一个字符的 epsilon 转换，增加一个从 `|` 到当前 `)` 的 epsilon 转换
+        alternationOps.forEach((or) => {
+          this.graph.addEdge(lp, or + 1)
+          this.graph.addEdge(or, i)
+        })
       }
 
       if (i < this.re.length - 1 && this.re[i + 1] === '*') {

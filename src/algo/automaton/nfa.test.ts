@@ -19,6 +19,17 @@ describe('NFA', () => {
     expect(nfa.recognize('abcd')).toBe(false)
   })
 
+  test('multiple alternations', () => {
+    const nfa = new Nfa('(ab|cd|ef|gh)')
+
+    expect(nfa.recognize('ab')).toBe(true)
+    expect(nfa.recognize('cd')).toBe(true)
+    expect(nfa.recognize('ef')).toBe(true)
+    expect(nfa.recognize('gh')).toBe(true)
+    expect(nfa.recognize('abc')).toBe(false)
+    expect(nfa.recognize('abcd')).toBe(false)
+  })
+
   test('Kleene star', () => {
     const nfa = new Nfa('ab*c')
     expect(nfa.recognize('abc')).toBe(true)
