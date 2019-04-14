@@ -40,8 +40,19 @@ describe('NFA', () => {
 
   test('Kleene star', () => {
     const nfa = new Nfa('ab*c')
-    expect(nfa.recognize('abc')).toBe(true)
     expect(nfa.recognize('ac')).toBe(true)
+    expect(nfa.recognize('abc')).toBe(true)
+    expect(nfa.recognize('abbc')).toBe(true)
+    expect(nfa.recognize('abbbc')).toBe(true)
+    expect(nfa.recognize('adc')).toBe(false)
+  })
+
+  test('Kleene plus', () => {
+    const nfa = new Nfa('ab+c')
+    expect(nfa.recognize('ac')).toBe(false)
+    expect(nfa.recognize('abc')).toBe(true)
+    expect(nfa.recognize('abbc')).toBe(true)
+    expect(nfa.recognize('abbbc')).toBe(true)
     expect(nfa.recognize('adc')).toBe(false)
   })
 
@@ -78,5 +89,12 @@ describe('NFA', () => {
     expect(() => {
       new Nfa('abc)d').recognize('abc')
     }).toThrowError('Unmatched right parenthesis, in position: 5')
+  })
+
+  test('any', () => {
+    const nfa = new Nfa('a.c')
+    expect(nfa.recognize('abc')).toBe(true)
+    expect(nfa.recognize('adc')).toBe(true)
+    expect(nfa.recognize('ac')).toBe(false)
   })
 })

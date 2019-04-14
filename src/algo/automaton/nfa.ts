@@ -3,6 +3,12 @@ import { Digraph } from '../../graph/digraph'
 import { DirectedDfs } from '../../graph/directed-dfa'
 import { Stack } from '../../stack/linked-list-stack'
 
+const Q = {
+  ANY: '.',
+  PLUS: '+',
+  STAR: '*',
+}
+
 export class Nfa {
   private readonly re: string[] // 匹配转换
   private readonly stateCount: number // 状态数量
@@ -74,12 +80,18 @@ export class Nfa {
         })
       }
 
-      if (i < this.re.length - 1 && this.re[i + 1] === '*') {
+      // '*'
+      if (i < this.re.length - 1 && this.re[i + 1] === Q.STAR) {
         this.graph.addEdge(lp, i + 1)
         this.graph.addEdge(i + 1, lp)
       }
 
-      if (chr === '(' || chr === '*' || chr === ')') {
+      // '+'
+      if (i < this.re.length - 1 && this.re[i + 1] === Q.PLUS) {
+        this.graph.addEdge(i + 1, lp)
+      }
+
+      if (chr === '(' || chr === ')' || chr === Q.STAR || chr === Q.PLUS) {
         this.graph.addEdge(i, i + 1)
       }
     }
@@ -117,7 +129,7 @@ export class Nfa {
 
       pc.forEach((v) => {
         if (v < this.stateCount) {
-          if (this.re[v] === chr || this.re[v] === '.') {
+          if (this.re[v] === chr || this.re[v] === Q.ANY) {
             match.add(v + 1)
           }
         }
