@@ -1,6 +1,19 @@
 import { Digraph } from './digraph'
 
 describe('Digraph', () => {
+  test('constructor without parameter', () => {
+    const graph = new Digraph()
+
+    expect(graph.vertexCount()).toBe(1)
+    expect(graph.edgeCount()).toBe(0)
+
+    const v = graph.newVertex()
+    const vertexSet = graph.adjacent(v)
+    expect(vertexSet.isEmpty()).toBe(true)
+
+    expect(() => { graph.adjacent(10) }).toThrowError('Vertex index out of bound!')
+  })
+
   test('constructor', () => {
     const n = 10
     const graph = new Digraph(n)
