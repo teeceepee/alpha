@@ -1,8 +1,13 @@
+import { Comparator } from './comparator'
 import { RedBlackTree } from './left-leaning-black-red-tree'
+
+const stringCompare: Comparator<string> = (a: string, b: string): number => {
+  return a.localeCompare(b)
+}
 
 describe('left-leaning RedBlackTree', () => {
   test('constructor', () => {
-    const tree = new RedBlackTree()
+    const tree = new RedBlackTree(stringCompare)
 
     expect(tree.depth()).toBe(0)
 
@@ -19,7 +24,7 @@ describe('left-leaning RedBlackTree', () => {
   })
 
   test('add randomly', () => {
-    const tree = new RedBlackTree<string>()
+    const tree = new RedBlackTree<string, string>(stringCompare)
 
     const count = 10000
     const keys = new Array(count)
@@ -36,7 +41,7 @@ describe('left-leaning RedBlackTree', () => {
   })
 
   test('forEach', () => {
-    const tree = new RedBlackTree<string>()
+    const tree = new RedBlackTree<string, string>(stringCompare)
 
     const count = 100
     const keys = new Array(count)
@@ -59,7 +64,7 @@ describe('left-leaning RedBlackTree', () => {
   })
 
   test('forEachR', () => {
-    const tree = new RedBlackTree<string>()
+    const tree = new RedBlackTree<string, string>(stringCompare)
 
     const count = 100
     const keys = new Array(count)
@@ -79,5 +84,19 @@ describe('left-leaning RedBlackTree', () => {
 
       index += 1
     })
+  })
+
+  test('number as key', () => {
+    const tree = new RedBlackTree<number, string>((a, b) => a - b)
+
+    tree.add(10, 'V1')
+    tree.add(100, 'V4')
+    tree.add(1000, 'V3')
+
+    const key = 1
+    const value = 'A'
+
+    tree.add(key, value)
+    expect(tree.get(key)).toBe(value)
   })
 })

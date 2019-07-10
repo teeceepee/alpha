@@ -1,4 +1,5 @@
 import { Stack } from '../stack/linked-list-stack'
+import { Comparator } from './comparator'
 
 enum Color {
   Red = 1,
@@ -6,15 +7,15 @@ enum Color {
 }
 
 // Left-leaning red-black tree
-class TreeNode<V> {
-  public key: string
+class TreeNode<K, V> {
+  public key: K
   public value: V
   public color: Color
 
-  public left: TreeNode<V> | null = null
-  public right: TreeNode<V> | null = null
+  public left: TreeNode<K, V> | null = null
+  public right: TreeNode<K, V> | null = null
 
-  constructor (key: string, value: V, color: Color = Color.Red) {
+  constructor (key: K, value: V, color: Color = Color.Red) {
     this.key = key
     this.value = value
     this.color = color
@@ -25,10 +26,16 @@ class TreeNode<V> {
   }
 }
 
-export class RedBlackTree<V> {
-  private root: TreeNode<V> | null = null
+export class RedBlackTree<K, V> {
+  private readonly comparator: Comparator<K>
+  private root: TreeNode<K, V> | null
 
-  public add (k: string, v: V): void {
+  constructor (comparator: Comparator<K>) {
+    this.comparator = comparator
+    this.root = null
+  }
+
+  public add (k: K, v: V): void {
     this.root = this.addRecursively(this.root, k, v)
     this.root.color = Color.Black
   }
@@ -37,7 +44,7 @@ export class RedBlackTree<V> {
     return this.depthRecursively(this.root)
   }
 
-  public get (k: string): V | null {
+  public get (k: K): V | null {
     return this.getRecursively(this.root, k)
   }
 
@@ -50,7 +57,7 @@ export class RedBlackTree<V> {
     this.traverseRecursively(this.root, callbackFn)
   }
 
-  private depthRecursively (node: TreeNode<V> | null): number {
+  private depthRecursively (node: TreeNode<K, V> | null): number {
     if (node == null) {
       return 0
     }
@@ -61,12 +68,12 @@ export class RedBlackTree<V> {
     return 1 + Math.max(leftDepth, rightDepth)
   }
 
-  private getRecursively (node: TreeNode<V> | null, k: string): V | null {
+  private getRecursively (node: TreeNode<K, V> | null, k: K): V | null {
     if (node == null) {
       return null
     }
 
-    const compareResult: number = k.localeCompare(node.key)
+    const compareResult: number = this.comparator(k, node.key)
 
     if (compareResult === 0) {
       return node.value
@@ -77,12 +84,12 @@ export class RedBlackTree<V> {
     }
   }
 
-  private addRecursively (node: TreeNode<V> | null, k: string, v: V): TreeNode<V> {
+  private addRecursively (node: TreeNode<K, V> | null, k: K, v: V): TreeNode<K, V> {
     if (node == null) {
-      return new TreeNode<V>(k, v)
+      return new TreeNode<K, V>(k, v)
     }
 
-    const compareResult: number = k.localeCompare(node.key)
+    const compareResult: number = this.comparator(k, node.key)
 
     if (compareResult === 0) {
       node.value = v
@@ -112,12 +119,12 @@ export class RedBlackTree<V> {
   }
 
   // When the `node` needs rotateLeft, `node.right` must be a red node
-  private rotateLeft (node: TreeNode<V>): TreeNode<V> {
+  private rotateLeft (node: TreeNode<K, V>): TreeNode<K, V> {
     if (!node.right) {
       throw new Error('`node.right` is null, it must be a red node')
     }
 
-    const newRoot: TreeNode<V> = node.right
+    const newRoot: TreeNode<K, V> = node.right
 
     node.right = newRoot.left
     newRoot.left = node
@@ -129,7 +136,7 @@ export class RedBlackTree<V> {
   }
 
   // When the `node` needs rotateRight, `node.left` must be a red node
-  private rotateRight (node: TreeNode<V>): TreeNode<V> {
+  private rotateRight (node: TreeNode<K, V>): TreeNode<K, V> {
     if (!node.left) {
       throw new Error('`node.left` is null, it must be a red node')
     }
@@ -146,7 +153,7 @@ export class RedBlackTree<V> {
   }
 
   // When the `node` needs flipColors, `node.left` and `node.right` must be red nodes
-  private flipColors (node: TreeNode<V>): void {
+  private flipColors (node: TreeNode<K, V>): void {
     if (!node.left || !node.right) {
       throw new Error('`node.left` and `node.right` must be red nodes')
     }
@@ -156,13 +163,13 @@ export class RedBlackTree<V> {
     node.right.color = Color.Black
   }
 
-  private isRed (node: TreeNode<V> | null): boolean {
+  private isRed (node: TreeNode<K, V> | null): boolean {
     return !!node && node.isRed()
   }
 
   private traverseIteratively (callbackFn: (value: V) => void): void {
-    const stack = new Stack<TreeNode<V>>()
-    let node: TreeNode<V> | null = this.root
+    const stack = new Stack<TreeNode<K, V>>()
+    let node: TreeNode<K, V> | null = this.root
 
     do {
       while (node != null) {
@@ -186,7 +193,7 @@ export class RedBlackTree<V> {
     } while (node != null || !stack.isEmpty())
   }
 
-  private traverseRecursively (node: TreeNode<V> | null, callbackFn: (value: V) => void): void {
+  private traverseRecursively (node: TreeNode<K, V> | null, callbackFn: (value: V) => void): void {
     if (node == null) {
       return
     }

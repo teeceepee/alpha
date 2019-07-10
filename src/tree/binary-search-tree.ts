@@ -1,34 +1,43 @@
+import { Comparator } from './comparator'
 
-class TreeNode<V> {
-  public key: string
+class TreeNode<K, V> {
+  public key: K
   public value: V
-  public left: TreeNode<V> | null = null
-  public right: TreeNode<V> | null = null
+  public left: TreeNode<K, V> | null = null
+  public right: TreeNode<K, V> | null = null
 
-  constructor (key: string, value: V) {
+  constructor (key: K, value: V) {
     this.key = key
     this.value = value
   }
 }
 
-interface RemoveResult<V> {
-  newRoot: TreeNode<V> | null
-  removedNode: TreeNode<V> | null
+interface RemoveResult<K, V> {
+  newRoot: TreeNode<K, V> | null
+  removedNode: TreeNode<K, V> | null
 }
 
-// Binary search tree
-export class BinarySearchTree<V> {
-  private root: TreeNode<V> | null = null
+/**
+ * Binary search tree
+ */
+export class BinarySearchTree<K, V> {
+  private readonly comparator: Comparator<K>
+  private root: TreeNode<K, V> | null
+
+  constructor (comparator: Comparator<K>) {
+    this.comparator = comparator
+    this.root = null
+  }
 
   public depth (): number {
     return this.depthRecursively(this.root)
   }
 
-  public get (k: string): V | null {
+  public get (k: K): V | null {
     return this.getRecursively(this.root, k)
   }
 
-  public add (k: string, v: V): void {
+  public add (k: K, v: V): void {
     this.root = this.addRecursively(this.root, k, v)
   }
 
@@ -40,13 +49,13 @@ export class BinarySearchTree<V> {
     return removedNode ? removedNode.value : null
   }
 
-  public remove (k: string): V | null {
+  public remove (k: K): V | null {
     const { newRoot, removedNode } = this.removeRecursively(this.root, k)
     this.root = newRoot
     return removedNode ? removedNode.value : null
   }
 
-  private depthRecursively (node: TreeNode<V> | null): number {
+  private depthRecursively (node: TreeNode<K, V> | null): number {
     if (node == null) {
       return 0
     }
@@ -57,12 +66,12 @@ export class BinarySearchTree<V> {
     return 1 + Math.max(leftDepth, rightDepth)
   }
 
-  private getRecursively (node: TreeNode<V> | null, k: string): V | null {
+  private getRecursively (node: TreeNode<K, V> | null, k: K): V | null {
     if (node == null) {
       return null
     }
 
-    const compareResult: number = k.localeCompare(node.key)
+    const compareResult: number = this.comparator(k, node.key)
 
     if (compareResult === 0) {
       return node.value
@@ -74,12 +83,12 @@ export class BinarySearchTree<V> {
   }
 
   // return a new node or return the updated `node`
-  private addRecursively (node: TreeNode<V> | null, k: string, v: V): TreeNode<V> {
+  private addRecursively (node: TreeNode<K, V> | null, k: K, v: V): TreeNode<K, V> {
     if (node == null) {
-      return new TreeNode<V>(k, v)
+      return new TreeNode<K, V>(k, v)
     }
 
-    const compareResult: number = k.localeCompare(node.key)
+    const compareResult: number = this.comparator(k, node.key)
 
     if (compareResult === 0) {
       node.value = v
@@ -93,7 +102,7 @@ export class BinarySearchTree<V> {
   }
 
   // return null or return the updated `node`
-  private removeMinRecursively (node: TreeNode<V> | null): RemoveResult<V> {
+  private removeMinRecursively (node: TreeNode<K, V> | null): RemoveResult<K, V> {
     if (node == null) {
       return {newRoot: null, removedNode: null}
     }
@@ -108,12 +117,12 @@ export class BinarySearchTree<V> {
     }
   }
 
-  private removeRecursively (node: TreeNode<V> | null, k: string): RemoveResult<V> {
+  private removeRecursively (node: TreeNode<K, V> | null, k: K): RemoveResult<K, V> {
     if (node == null) {
       return {newRoot: null, removedNode: null}
     }
 
-    const compareResult: number = k.localeCompare(node.key)
+    const compareResult: number = this.comparator(k, node.key)
 
     if (compareResult === 0) {
       const removeResult = this.removeMinRecursively(node.right)

@@ -1,8 +1,13 @@
 import { BinarySearchTree } from './binary-search-tree'
+import { Comparator } from './comparator'
+
+const stringCompare: Comparator<string> = (a: string, b: string): number => {
+  return a.localeCompare(b)
+}
 
 describe('BinarySearchTree', () => {
   test('depth', () => {
-    const tree = new BinarySearchTree<string>()
+    const tree = new BinarySearchTree<string, string>(stringCompare)
 
     expect(tree.depth()).toBe(0)
 
@@ -12,7 +17,7 @@ describe('BinarySearchTree', () => {
   })
 
   test('add get', () => {
-    const tree = new BinarySearchTree<string>()
+    const tree = new BinarySearchTree<string, string>(stringCompare)
     const key = 'a'
     const value = 'A'
 
@@ -21,7 +26,7 @@ describe('BinarySearchTree', () => {
   })
 
   test('add randomly', () => {
-    const tree = new BinarySearchTree<string>()
+    const tree = new BinarySearchTree<string, string>(stringCompare)
 
     const count = 10000
     const keys = new Array(count)
@@ -38,7 +43,7 @@ describe('BinarySearchTree', () => {
   })
 
   test('removeMin', () => {
-    const tree = new BinarySearchTree<string>()
+    const tree = new BinarySearchTree<string, string>(stringCompare)
     const key = 'a'
     const value = 'A'
 
@@ -51,7 +56,7 @@ describe('BinarySearchTree', () => {
   })
 
   test('remove', () => {
-    const tree = new BinarySearchTree<string>()
+    const tree = new BinarySearchTree<string, string>(stringCompare)
     const key = 'a'
     const value = 'A'
 
@@ -68,5 +73,19 @@ describe('BinarySearchTree', () => {
     const removed = tree.remove('a')
 
     expect(removed).toBe(value)
+  })
+
+  test('number as key', () => {
+    const tree = new BinarySearchTree<number, string>((a, b) => a - b)
+
+    tree.add(10, 'V1')
+    tree.add(100, 'V4')
+    tree.add(1000, 'V3')
+
+    const key = 1
+    const value = 'A'
+
+    tree.add(key, value)
+    expect(tree.get(key)).toBe(value)
   })
 })
