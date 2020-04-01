@@ -1,6 +1,6 @@
 import { Bag } from '../bag/linked-list-bag'
 import { Digraph } from './digraph'
-import { DirectedDfs } from './directed-dfa'
+import { DirectedDfs } from './directed-dfs'
 
 describe('Directed DFS', () => {
   test('marked', () => {

@@ -1,6 +1,6 @@
 import { Bag } from '../../bag/linked-list-bag'
 import { Digraph } from '../../graph/digraph'
-import { DirectedDfs } from '../../graph/directed-dfa'
+import { DirectedDfs } from '../../graph/directed-dfs'
 import { Stack } from '../../stack/linked-list-stack'
 
 class CharSet {
